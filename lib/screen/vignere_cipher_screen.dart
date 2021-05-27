@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:vignere_cipher/screen/decryption.dart';
 class VignereCipherScreen extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
@@ -11,6 +12,7 @@ class _VignereCipherScreen extends State<VignereCipherScreen>{
   String _plainText;
   String _keyValue;
   List _cipherText = [];
+  String _cipherTextString="";
   List _key = [];
 
   @override
@@ -39,23 +41,30 @@ class _VignereCipherScreen extends State<VignereCipherScreen>{
               hintText: 'no space allow',
               labelText: 'Key',
             ),),
-          ElevatedButton(onPressed: (){
+          ElevatedButton(onPressed: ()async{
             _keyValue.runes.forEach((int rune) {
               var character = new String.fromCharCode(rune);
-              print(character.runtimeType);
               _key.add(character);
             });
             getCipherText();
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) {
+                    return Decryption(cipherText: _cipherTextString,);
+                  }
+              ),
+            );
 
           }, child: Text("submit")),
+          Text(_cipherTextString),
         ],
       ),
     );
   }
   String plainTextToCipherText(int plainText, int key) {
     int cipher = plainText + key;
-    if (cipher > 26) {
-      cipher = cipher % 26;
+    if (cipher > 25) {
+      cipher = cipher % 25;
     }
     return NumberToAlphabet(cipher);
   }
@@ -377,8 +386,11 @@ class _VignereCipherScreen extends State<VignereCipherScreen>{
       }
     });
     for(var c in _cipherText){
-      print(c);
+      _cipherTextString=_cipherTextString+c;
     }
+    setState(() {
+
+    });
 
   }
 
